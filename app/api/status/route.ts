@@ -5,7 +5,7 @@ export const dynamic = "force-dynamic";
 export async function GET() {
   const mode = integrationMode();
   const status = {
-    mode: mode.live ? "mainnet" : "evidence-demo",
+    mode: "evidence-demo" as "mainnet" | "evidence-demo",
     checkedAt: new Date().toISOString(),
     walrus: { configured: mode.walrus, healthy: false, detail: "Not configured" },
     tatum: { configured: mode.tatum, healthy: false, detail: "Not configured" },
@@ -54,8 +54,12 @@ export async function GET() {
     }
   }
 
+  status.mode =
+    status.walrus.healthy && status.tatum.healthy && status.payments.healthy
+      ? "mainnet"
+      : "evidence-demo";
+
   return Response.json(status, {
     headers: { "cache-control": "no-store" },
   });
 }
-

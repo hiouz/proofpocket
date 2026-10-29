@@ -120,6 +120,11 @@ button:focus-visible, a:focus-visible, input:focus-visible {
 .section-heading .eyebrow { margin-bottom: 14px; }
 .section-heading h2, .memory-intro h2 { margin: 0; font-size: clamp(36px, 4.2vw, 62px); line-height: .98; letter-spacing: -.055em; }
 .section-heading > p { max-width: 480px; margin: 0; color: #8f939b; line-height: 1.65; }
+.section-heading-actions { max-width: 480px; display: grid; justify-items: end; gap: 16px; }
+.section-heading-actions > p { margin: 0; color: #8f939b; line-height: 1.65; }
+.reset-proof { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line); border-radius: 6px; background: transparent; color: #92969e; padding: 9px 11px; cursor: pointer; font: 750 9px/1 ui-monospace, monospace; letter-spacing: .04em; text-transform: uppercase; }
+.reset-proof:hover { border-color: rgba(130,243,189,.35); color: var(--mint); }
+.reset-proof svg { width: 13px; }
 .act-switcher { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--line); border-bottom: 0; border-radius: 14px 14px 0 0; overflow: hidden; }
 .act-switcher button { min-height: 96px; display: grid; grid-template-columns: 44px 1fr; grid-template-rows: auto auto; text-align: left; padding: 20px; border: 0; border-right: 1px solid var(--line); color: #7f838b; background: #0d0f12; cursor: pointer; }
 .act-switcher button:last-child { border: 0; }
@@ -181,6 +186,13 @@ button:focus-visible, a:focus-visible, input:focus-visible {
 .reason-box p { margin: 0 0 10px; color: #656a73; font: 700 8px ui-monospace, monospace; letter-spacing: .12em; }
 .reason-box span { display: block; color: #a7abb3; font-size: 10px; line-height: 1.5; padding-left: 10px; position: relative; }
 .reason-box span::before { content: "·"; position: absolute; left: 0; color: var(--mint); }
+.receipt-passport { margin-top: 14px; padding: 16px; border: 1px solid rgba(147,130,255,.2); background: rgba(147,130,255,.045); }
+.receipt-passport > p { margin: 0 0 12px; color: var(--violet); font: 750 8px/1 ui-monospace, monospace; letter-spacing: .12em; }
+.receipt-passport dl { margin: 0; display: grid; gap: 8px; }
+.receipt-passport dl > div { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 10px; }
+.receipt-passport dt { color: #656a73; font: 700 8px/1.4 ui-monospace, monospace; text-transform: uppercase; }
+.receipt-passport dd { margin: 0; color: #aeb2ba; font: 600 8px/1.4 ui-monospace, monospace; overflow-wrap: anywhere; }
+.receipt-passport dd.neutral { color: var(--amber); }
 .decision-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
 .decision-actions button { display: inline-flex; align-items: center; gap: 7px; padding: 10px 12px; border: 1px solid rgba(130,243,189,.35); background: rgba(130,243,189,.1); color: var(--mint); border-radius: 6px; font-size: 9px; font-weight: 800; cursor: pointer; }
 .decision-actions button svg { width: 13px; }
@@ -290,6 +302,7 @@ footer > div:last-child a { color: #8a8f98; font-size: 10px; text-underline-offs
   .decision-section, .memory-section, .architecture { width: calc(100% - 32px); padding: 82px 0; }
   .section-heading { display: block; }
   .section-heading > p { margin-top: 20px; }
+  .section-heading-actions { max-width: none; margin-top: 20px; justify-items: start; }
   .act-switcher { grid-template-columns: 1fr; }
   .act-switcher button { min-height: 78px; border-right: 0; border-bottom: 1px solid var(--line); }
   .decision-grid { grid-template-columns: 1fr; }

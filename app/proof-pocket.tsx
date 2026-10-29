@@ -18,6 +18,7 @@ import {
   MemoryStick,
   Play,
   Radio,
+  RotateCcw,
   ScanSearch,
   ShieldCheck,
   Sparkles,
@@ -47,6 +48,7 @@ type RuntimeStatus = {
 type Receipt = {
   receiptId: string;
   memoryMode: "walrus-mainnet" | "session-demo";
+  persisted: boolean;
   decision: Decision;
 };
 
@@ -131,6 +133,18 @@ export function ProofPocket() {
       .catch(() => setStatus(null));
   }, []);
 
+  function resetDemo() {
+    setScenarioIndex(0);
+    setPolicy(initialPolicy);
+    setMemories([]);
+    setPriorRequests([]);
+    setReceipt(null);
+    setNotice("Proof reset. Start with the unknown merchant encounter.");
+    setChallenge("");
+    setDigest("");
+    setVerification(null);
+  }
+
   async function evaluate() {
     setBusy(true);
     setNotice("");
@@ -147,6 +161,7 @@ export function ProofPocket() {
       setReceipt({
         receiptId: `local-${scenario.requestId}`,
         memoryMode: "session-demo",
+        persisted: false,
         decision: localPreview,
       });
       setNotice("Local policy engine used. No network evidence claimed.");
@@ -228,12 +243,16 @@ export function ProofPocket() {
 
   async function verifyDigest() {
     setVerification(null);
-    const response = await fetch("/api/verify", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ digest }),
-    });
-    setVerification((await response.json()) as Record<string, unknown>);
+    try {
+      const response = await fetch("/api/verify", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ digest }),
+      });
+      setVerification((await response.json()) as Record<string, unknown>);
+    } catch {
+      setVerification({ verified: false, error: "Verification service is unavailable." });
+    }
   }
 
   const decision = receipt?.decision;
@@ -254,7 +273,7 @@ export function ProofPocket() {
         </nav>
         <div className="mode-pill">
           <StatusDot healthy={status?.mode === "mainnet"} />
-          {status?.mode === "mainnet" ? "MAINNET EVIDENCE" : "EVIDENCE DEMO"}
+          {!status ? "CHECKING RAILS" : status.mode === "mainnet" ? "MAINNET EVIDENCE" : "EVIDENCE DEMO"}
         </div>
       </header>
 
@@ -302,7 +321,10 @@ export function ProofPocket() {
             <p className="eyebrow">INTERACTIVE PROOF</p>
             <h2>Watch the boundary learn.</h2>
           </div>
-          <p>Three requests. One policy. A memory that changes the decision—but never the hard limits.</p>
+          <div className="section-heading-actions">
+            <p>Three requests. One policy. A memory that changes the decision—but never the hard limits.</p>
+            <button className="reset-proof" onClick={resetDemo}><RotateCcw /> Reset proof</button>
+          </div>
         </div>
 
         <div className="act-switcher" role="tablist" aria-label="Demo acts">
@@ -323,11 +345,11 @@ export function ProofPocket() {
 
         <div className="decision-grid">
           <article className="request-panel">
-            <div className="panel-kicker"><Terminal /> INCOMING MPP REQUEST <span>LIVE MODEL</span></div>
+            <div className="panel-kicker"><Terminal /> INCOMING MPP REQUEST <span>{status?.payments.healthy ? "LIVE RAIL" : "DEMO INPUT"}</span></div>
             <div className="request-value">
               <span className="request-currency">$</span>
               <strong>{scenario.amountUsd.toFixed(2)}</strong>
-              <small>USDC / SUI MAINNET</small>
+              <small>{status?.payments.healthy ? "USDC / SUI MAINNET" : "USDC / SUI · SIMULATED REQUEST"}</small>
             </div>
             <dl className="request-fields">
               <div><dt>Merchant</dt><dd>{scenario.merchant}</dd></div>
@@ -373,6 +395,15 @@ export function ProofPocket() {
                 <div className="reason-box">
                   <p>WHY THIS DECISION</p>
                   {decision.reasons.map((reason) => <span key={reason}>{reason}</span>)}
+                </div>
+                <div className="receipt-passport">
+                  <p>DECISION RECEIPT</p>
+                  <dl>
+                    <div><dt>Receipt</dt><dd>{receipt.receiptId}</dd></div>
+                    <div><dt>Storage</dt><dd className={receipt.persisted ? "positive" : "neutral"}>{receipt.persisted ? "D1 STORED" : "SESSION ONLY"}</dd></div>
+                    <div><dt>Confidence</dt><dd>{decision.confidence}%</dd></div>
+                    <div><dt>Fingerprint</dt><dd>{decision.fingerprint}</dd></div>
+                  </dl>
                 </div>
                 <div className="decision-actions">
                   {decision.verdict !== "block" && (
