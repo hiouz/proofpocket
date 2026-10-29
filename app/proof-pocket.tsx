@@ -534,7 +534,7 @@ export function ProofPocket() {
       <footer>
         <div className="brand"><span className="brand-mark"><Fingerprint /></span><span>PROOF<span>POCKET</span></span></div>
         <p>Memory-native payment control for agents.</p>
-        <div><a href="/openapi.json">OpenAPI</a><a href="#top">Back to top</a></div>
+        <div><a href="/story">Build story</a><a href="/openapi.json">OpenAPI</a><a href="#top">Back to top</a></div>
       </footer>
     </main>
   );
